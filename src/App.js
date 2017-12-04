@@ -1,19 +1,57 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import { Layout, Input, Form, Radio } from 'antd';
+import axios from 'axios';
+import SuggestInput from './component/suggestInput';
+const { Header, Content, Footer } = Layout;
+const FormItem = Form.Item;
+
+function onSelect(value) {
+  console.log('onSelect', value);
+}
 class App extends Component {
+  state = {
+    dataSource: [],
+  };
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+  handleRangeChange = () => {
+
+  }
   render() {
+    const { dataSource } = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Layout>
+        <Header></Header>
+        <Content style={{ padding: '20px' }}>
+          <Form>
+            <FormItem
+              label="查询范围"
+            >
+              <Radio.Group defaultValue="horizontal" onChange={this.handleRangeChange}>
+                <Radio.Button value="oneMonth">一个月</Radio.Button>
+                <Radio.Button value="twoMonth">三个月</Radio.Button>
+                <Radio.Button value="sixMonth">六个月</Radio.Button>
+                <Radio.Button value="oneYear">一年</Radio.Button>
+                <Radio.Button value="twoYear">二年</Radio.Button>
+              </Radio.Group>
+            </FormItem>
+            <FormItem
+              label="包名"
+            >
+              <SuggestInput />
+            </FormItem>
+          </Form>
+          <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>Content</div>
+        </Content>
+        <Footer style={{ textAlign: 'center' }}>
+          footer
+      </Footer>
+      </Layout>
     );
   }
 }
