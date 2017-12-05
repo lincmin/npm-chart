@@ -3,7 +3,6 @@ import { Icon, Input, AutoComplete, Spin } from 'antd';
 import axios from 'axios';
 
 const Option = AutoComplete.Option;
-const OptGroup = AutoComplete.OptGroup;
 
 function onSelect(value) {
     console.log('onSelect', value);
@@ -33,22 +32,27 @@ class SuggestInput extends Component {
     getNpmSuggest = (params) => {
         const that = this;
         const url = "http://search-npm-registry-4654ri5rsc4mybfyhytyfu225m.us-east-1.es.amazonaws.com/npm/_suggest";
-        axios.post(url, params)
-            .then(function (response) {
-                console.log(response);
-                let optionsData = [];
-                if (response.status == 200) {
-                    if (response.data && response.data.autocomplete_suggest) {
-                        optionsData = response.data.autocomplete_suggest[0].options;
-                    }
+        axios.post(
+            url,
+            params,
+            {
+                headers: { 'content-type': 'application/x-www-form-urlencoded' },
+            }
+        ).then(function (response) {
+            console.log(response);
+            let optionsData = [];
+            if (response.status == 200) {
+                if (response.data && response.data.autocomplete_suggest) {
+                    optionsData = response.data.autocomplete_suggest[0].options;
                 }
-                that.generateOptions(optionsData);
-            })
-            .catch(function (error) {
-                console.log(error);
+            }
+            that.generateOptions(optionsData);
+            that.setState({ loading: false });
 
-            });
-        this.setState({ loading: false });
+        }).catch(function (error) {
+            console.log(error);
+            that.setState({ loading: false });
+        });
     }
     generateOptions = (data) => {
         const options = data.map(group => (
