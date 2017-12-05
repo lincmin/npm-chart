@@ -22,8 +22,13 @@ class App extends Component {
   handleRangeChange = () => {
 
   }
+  getPackageName = (value) => {
+    console.log(value);
+  }
+
   render() {
     const { dataSource } = this.state;
+    const { getFieldDecorator } = this.props.form;
     return (
       <Layout>
         <Header></Header>
@@ -32,18 +37,20 @@ class App extends Component {
             <FormItem
               label="查询范围"
             >
-              <Radio.Group defaultValue="horizontal" onChange={this.handleRangeChange}>
-                <Radio.Button value="oneMonth">一个月</Radio.Button>
-                <Radio.Button value="twoMonth">三个月</Radio.Button>
-                <Radio.Button value="sixMonth">六个月</Radio.Button>
-                <Radio.Button value="oneYear">一年</Radio.Button>
-                <Radio.Button value="twoYear">二年</Radio.Button>
-              </Radio.Group>
+              {getFieldDecorator('dateRange', { initialValue: 'oneMonth' })(
+                <Radio.Group onChange={this.handleRangeChange}>
+                  <Radio.Button value="oneMonth">一个月</Radio.Button>
+                  <Radio.Button value="twoMonth">三个月</Radio.Button>
+                  <Radio.Button value="sixMonth">六个月</Radio.Button>
+                  <Radio.Button value="oneYear">一年</Radio.Button>
+                  <Radio.Button value="twoYear">二年</Radio.Button>
+                </Radio.Group>
+              )}
             </FormItem>
             <FormItem
               label="包名"
             >
-              <SuggestInput />
+              <SuggestInput packageName={this.getPackageName.bind(this)} />
             </FormItem>
           </Form>
           <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>Content</div>
@@ -55,5 +62,5 @@ class App extends Component {
     );
   }
 }
-
-export default App;
+const AppForm = Form.create()(App);
+export default AppForm;

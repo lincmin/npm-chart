@@ -4,9 +4,6 @@ import axios from 'axios';
 
 const Option = AutoComplete.Option;
 
-function onSelect(value) {
-    console.log('onSelect', value);
-}
 class SuggestInput extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +25,9 @@ class SuggestInput extends Component {
             }
         };
         this.getNpmSuggest(params);
+    }
+    onSelect = (value) => {
+        this.props.packageName(value);
     }
     getNpmSuggest = (params) => {
         const that = this;
@@ -72,7 +72,7 @@ class SuggestInput extends Component {
                     dropdownMatchSelectWidth={true}
                     size="large"
                     style={{ width: '100%' }}
-                    onSelect={onSelect}
+                    onSelect={this.onSelect.bind(this)}
                     onSearch={this.handleSearch.bind(this)}
                     dataSource={dataSource}
                     placeholder="请输入npm包名称"
