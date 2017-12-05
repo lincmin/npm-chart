@@ -14,6 +14,9 @@ class SuggestInput extends Component {
     }
 
     handleSearch = (value) => {
+        if (!value) {
+            this.props.packageName(value);
+        }
         this.setState({ loading: true });
         //{"autocomplete_suggest":{"text":"vue","completion":{"field":"suggest"}}}:
         let params = {
