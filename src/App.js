@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import { Layout, Input, Form, Radio, Spin, Tag, Tooltip } from 'antd';
+import { Layout, Form, Radio, Spin, Tag, Tooltip, message } from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import SuggestInput from './component/suggestInput';
@@ -18,8 +18,8 @@ class App extends Component {
   state = {
     loading: false,
     period: 'last-month',
+    dateRange: 'Onemonth',
     tags: [],
-    packageName: '',
     legendData: [],
     xAxisData: [],
     seriesList: [],
@@ -79,10 +79,10 @@ class App extends Component {
   }
   handleRangeChange = (e) => {
     const dateFormat = 'YYYY-MM-DD';
-    let value = e.target.value;
+    let dateRange = e.target.value;
     let period;
     console.log(e.target.value);
-    switch (value) {
+    switch (dateRange) {
       case 'oneMonth':
         period = 'last-month';
         break;
@@ -96,7 +96,8 @@ class App extends Component {
         period = `${moment().subtract(1, 'year').format(dateFormat)}:${moment().format(dateFormat)}`;
         break;
     }
-    this.setState({ period }, () => {
+
+    this.setState({ period, dateRange }, () => {
       this.getTrendDataSync();
     });
   }
@@ -120,7 +121,6 @@ class App extends Component {
         }
         return this.getTrendDataAsync(paramsObj);
       });
-
       // let results = await Promise.all(promises);
       // console.log('results', results);
       Promise.all(promises).then(values => {
@@ -158,7 +158,6 @@ class App extends Component {
         }
       ).then(function (response) {
         console.log(response);
-        let downloadsData = [];
         if (response.status == 200) {
           if (response.data) {
             resolve(that.handleTrendData(response.data));
@@ -166,6 +165,7 @@ class App extends Component {
         }
         that.setState({ loading: false });
       }).catch(function (error) {
+        message.error('出现异常，请稍候再试');
         reject(error);
         console.log(error);
         that.setState({ loading: false });
@@ -203,19 +203,18 @@ class App extends Component {
     });
   }
   render() {
-    const { packageName, tags, legendData, xAxisData, seriesList } = this.state;
-    const { getFieldDecorator } = this.props.form;
+    const { dateRange, tags, legendData, xAxisData, seriesList, loading } = this.state;
     if (trendChart) {
       let trendChartOption = trendChart.getOption();
-      trendChartOption.legend[0].data = this.state.legendData;
-      trendChartOption.xAxis[0].data = this.state.xAxisData;
-      trendChartOption.series = this.state.seriesList;
+      trendChartOption.legend[0].data = legendData;
+      trendChartOption.xAxis[0].data = xAxisData;
+      trendChartOption.series = seriesList;
       trendChart.setOption(trendChartOption, true);
     }
     return (
       <Layout>
         <Header></Header>
-        <Spin spinning={this.state.loading} tip="加载中...">
+        <Spin spinning={loading} tip="加载中...">
           <Content style={{ padding: '20px' }}>
             <Form>
               {
@@ -223,14 +222,12 @@ class App extends Component {
                   <FormItem
                     label="查询范围"
                   >
-                    {getFieldDecorator('dateRange', { initialValue: 'oneMonth' })(
-                      <Radio.Group onChange={this.handleRangeChange.bind(this)}>
-                        <Radio.Button value="oneMonth">一个月</Radio.Button>
-                        <Radio.Button value="threeMonth">三个月</Radio.Button>
-                        <Radio.Button value="sixMonth">六个月</Radio.Button>
-                        <Radio.Button value="oneYear">一年</Radio.Button>
-                      </Radio.Group>
-                    )}
+                    <Radio.Group defaultValue={dateRange} onChange={this.handleRangeChange.bind(this)}>
+                      <Radio.Button value="oneMonth">一个月</Radio.Button>
+                      <Radio.Button value="threeMonth">三个月</Radio.Button>
+                      <Radio.Button value="sixMonth">六个月</Radio.Button>
+                      <Radio.Button value="oneYear">一年</Radio.Button>
+                    </Radio.Group>
                   </FormItem>) : (null)
               }
               <FormItem
@@ -260,5 +257,4 @@ class App extends Component {
     );
   }
 }
-const AppForm = Form.create()(App);
-export default AppForm;
+export default App;
