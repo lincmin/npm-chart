@@ -74,14 +74,7 @@ class App extends Component {
           }
         }
       },
-      series: [{
-        type: 'line',
-        name: '',
-        smooth: true,
-        symbol: 'circle',
-        symbolSize: '5',
-        data: []
-      }]
+      series: []
     });
   }
   handleRangeChange = (e) => {
@@ -210,21 +203,15 @@ class App extends Component {
     });
   }
   render() {
-    if (trendChart) {
-      trendChart.setOption({
-        xAxis: [
-          {
-            data: this.state.xAxisData,
-          }
-        ],
-        legend: {
-          data: this.state.legendData,
-        },
-        series: this.state.seriesList
-      });
-    }
-    const { packageName, tags } = this.state;
+    const { packageName, tags, legendData, xAxisData, seriesList } = this.state;
     const { getFieldDecorator } = this.props.form;
+    if (trendChart) {
+      let trendChartOption = trendChart.getOption();
+      trendChartOption.legend[0].data = this.state.legendData;
+      trendChartOption.xAxis[0].data = this.state.xAxisData;
+      trendChartOption.series = this.state.seriesList;
+      trendChart.setOption(trendChartOption, true);
+    }
     return (
       <Layout>
         <Header></Header>
