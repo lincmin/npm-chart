@@ -40,12 +40,13 @@ class App extends Component {
       grid: {
         top: '30%',
         left: '2%',
-        right: '2%',
+        right: '4%',
         bottom: '5%',
         containLabel: true
       },
       xAxis: {
         type: 'category',
+        name: '日期',
         boundaryGap: true,
         axisLine: {
           show: true,
