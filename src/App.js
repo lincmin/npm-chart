@@ -111,6 +111,7 @@ class App extends Component {
   getPackageName = value => {
     let tags = this.state.tags
     if (value) {
+      if (tags.length > 0 && tags.indexOf(value) >= 0) return
       tags.push(value)
       this.getTrendDataSync()
     }
