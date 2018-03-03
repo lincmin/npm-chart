@@ -18,7 +18,7 @@ class App extends Component {
   state = {
     loading: false,
     period: 'last-month',
-    dateRange: 'Onemonth',
+    dateRange: 'oneMonth',
     tags: [],
     legendData: [],
     xAxisData: [],
