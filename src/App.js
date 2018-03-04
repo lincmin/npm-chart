@@ -46,7 +46,7 @@ class App extends Component {
       },
       xAxis: {
         type: 'category',
-        name: '日期',
+        name: 'Date',
         boundaryGap: true,
         axisLine: {
           show: true,
@@ -64,7 +64,7 @@ class App extends Component {
       },
       yAxis: {
         type: 'value',
-        name: '下载量',
+        name: 'downloads',
         axisTick: {
           show: false
         },
@@ -165,7 +165,7 @@ class App extends Component {
         })
         .then(function(response) {
           console.log(response)
-          if (response.status == 200) {
+          if (response.status === 200) {
             if (response.data) {
               resolve(that.handleTrendData(response.data))
             }
@@ -173,7 +173,7 @@ class App extends Component {
           that.setState({ loading: false })
         })
         .catch(function(error) {
-          message.error('出现异常，请稍候再试')
+          message.error('There are exceptions. Please try again later')
           reject(error)
           console.log(error)
           that.setState({ loading: false })
@@ -236,23 +236,23 @@ class App extends Component {
             </span>
           </Col>
         </Header>
-        <Spin spinning={loading} tip="加载中...">
+        <Spin spinning={loading} tip="loading...">
           <Content style={{ padding: '20px' }}>
             <Form>
               {tags.length > 0 ? (
-                <FormItem label="查询范围">
+                <FormItem label="Range">
                   <Radio.Group
                     defaultValue={dateRange}
                     onChange={this.handleRangeChange.bind(this)}
                   >
-                    <Radio.Button value="oneMonth">一个月</Radio.Button>
-                    <Radio.Button value="threeMonth">三个月</Radio.Button>
-                    <Radio.Button value="sixMonth">六个月</Radio.Button>
-                    <Radio.Button value="oneYear">一年</Radio.Button>
+                    <Radio.Button value="oneMonth">One Month</Radio.Button>
+                    <Radio.Button value="threeMonth">Three Months</Radio.Button>
+                    <Radio.Button value="sixMonth">Six Months</Radio.Button>
+                    <Radio.Button value="oneYear">One Year</Radio.Button>
                   </Radio.Group>
                 </FormItem>
               ) : null}
-              <FormItem label="名称">
+              <FormItem label="Name">
                 <SuggestInput packageName={this.getPackageName.bind(this)} />
               </FormItem>
             </Form>
