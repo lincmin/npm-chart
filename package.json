@@ -2,6 +2,7 @@
   "name": "npm-chart",
   "version": "0.1.0",
   "private": true,
+  "homepage": "./",
   "dependencies": {
     "antd": "^2.13.11",
     "echarts": "^3.8.5",
