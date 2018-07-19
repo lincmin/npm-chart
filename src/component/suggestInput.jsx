@@ -18,50 +18,41 @@ class SuggestInput extends Component {
       this.props.packageName(value)
     }
     this.setState({ loading: true })
-    //{"autocomplete_suggest":{"text":"vue","completion":{"field":"suggest"}}}:
-    let params = {
-      autocomplete_suggest: {
-        text: value,
-        completion: {
-          field: 'suggest'
-        }
-      }
-    }
-    this.getNpmSuggest(params)
+    this.getNpmSuggest(value)
   }
   onSelect = value => {
     this.props.packageName(value)
   }
-  getNpmSuggest = params => {
+  getNpmSuggest = param => {
     const that = this
     const url =
-      'http://search-npm-registry-4654ri5rsc4mybfyhytyfu225m.us-east-1.es.amazonaws.com/npm/_suggest'
+      `https://api.npms.io/v2/search/suggestions?q=${param}`
     axios
-      .post(url, params, {
+      .get(url, {
         headers: { 'content-type': 'application/x-www-form-urlencoded' }
       })
-      .then(function(response) {
+      .then(function (response) {
         console.log(response)
         let optionsData = []
         if (response.status === 200) {
-          if (response.data && response.data.autocomplete_suggest) {
-            optionsData = response.data.autocomplete_suggest[0].options
+          if (response.data && response.data.length > 0) {
+            optionsData = response.data
           }
         }
         that.generateOptions(optionsData)
         that.setState({ loading: false })
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error)
         that.setState({ loading: false })
       })
   }
   generateOptions = data => {
     const options = data.map(group => (
-      <Option key={group.text} value={group.text}>
-        {group.text}
+      <Option key={group.package.name} value={group.package.name}>
+        {group.package.name}
         <br />
-        <span className="">{group.payload.description}</span>
+        <span className="">{group.package.description}</span>
       </Option>
     ))
     this.setState({ dataSource: options })
